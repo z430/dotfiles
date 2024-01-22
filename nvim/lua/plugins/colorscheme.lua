@@ -3,7 +3,6 @@ return {
     "catppuccin/nvim",
     name = "catppuccin",
     opts = {
-      flavour = "frappe",
       term_colors = true,
       transparent_background = false,
       styles = {
@@ -18,6 +17,13 @@ return {
         booleans = {},
         properties = {},
         types = {},
+      },
+      color_overrides = {
+        mocha = {
+          base = "#000000",
+          mantle = "#000000",
+          crust = "#000000",
+        },
       },
       integrations = {
         telescope = {
