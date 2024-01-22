@@ -8,38 +8,4 @@ return {
       anaconda = { python_parent_dir = "" },
     },
   },
-  {
-    "neovim/nvim-lspconfig",
-    opts = {
-      servers = {
-        pyright = {
-          python = {
-            analysis = {
-              autoSearchPaths = true,
-              diagnosticMode = "openFilesOnly",
-              useLibraryCodeForTypes = true,
-            },
-          },
-        },
-      },
-    },
-  },
-  {
-    "nvim-treesitter/nvim-treesitter",
-    opts = {
-      ensure_installed = {
-        "bash",
-        "html",
-        "javascript",
-        "json",
-        "lua",
-        "markdown",
-        "markdown_inline",
-        "python",
-        "typescript",
-        "vim",
-        "yaml",
-      },
-    },
-  },
 }
