@@ -1,6 +1,6 @@
 sudo apt update
 sudo apt upgrade
-sudo apt install -y python3 python3-pip python3-venv unzip build-essential npm \
+sudo apt install -y python3 python3-pip python3-venv unzip build-essential \
 	zsh fd-find pipx tmux curl bat zsh
 
 curl -fsSL https://deb.nodesource.com/setup_21.x | sudo -E bash - &&
