@@ -5,7 +5,7 @@ Import-Module posh-git
 
 # Load prompt config
 function GetScriptDirectory { Split-Path $MyInvocation.ScriptName }
-$PROMPT_CONFIG = Join-Path (GetScriptDirectory) 'takuya.omp.json'
+$PROMPT_CONFIG = Join-Path (GetScriptDirectory) 'powerline.omp.json'
 oh-my-posh init pwsh --config $PROMPT_CONFIG | Invoke-Expression
 
 # Icons
@@ -28,7 +28,7 @@ Set-PSReadLineOption -EditMode Emacs
 Set-PSReadLineOption -BellStyle None
 Set-PSReadLineOption -PredictionSource History
 Set-PSReadLineOption -PredictionViewStyle ListView
-Set-PSReadLineKeyHandler -Chord 'Ctrl+d' -Function DeleteChar
+Set-PSReadLineKeyHandler -Chord 'Ctrl+d' -Function DeleteCharOrExit
 Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
 
 # Fzf
@@ -37,24 +37,24 @@ Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+f' -PSReadlineChordReserverHistor
 
 # Utilities
 function which ($command) {
-  Get-Command -Name $command -ErrorAction SilentlyContinue |
-    Select-Object -ExpandProperty Path -ErrorAction SilentlyContinue
+	Get-Command -Name $command -ErrorAction SilentlyContinue |
+	Select-Object -ExpandProperty Path -ErrorAction SilentlyContinue
 }
 
 # SSH Autocomplete
-Register-ArgumentCompleter -CommandName ssh,scp,sftp -Native -ScriptBlock {
-  param($wordToComplete, $commandAst, $cursorPosition)
+Register-ArgumentCompleter -CommandName ssh, scp, sftp -Native -ScriptBlock {
+	param($wordToComplete, $commandAst, $cursorPosition)
 
-  function Get-SSHHostList ($sshConfigPath) {
-    Get-Content -Path $sshConfigPath `
-    | Select-String -Pattern '^Host ' `
-    | ForEach-Object { $_ -replace 'Host ', ''} `
-    | ForEach-Object { $_ -split ' '} `
-    | Sort-Object -Unique `
-    | Select-String -Pattern '^.*[*!?].*$' -NotMatch
-  }
+	function Get-SSHHostList ($sshConfigPath) {
+		Get-Content -Path $sshConfigPath `
+		| Select-String -Pattern '^Host ' `
+		| ForEach-Object { $_ -replace 'Host ', '' } `
+		| ForEach-Object { $_ -split ' ' } `
+		| Sort-Object -Unique `
+		| Select-String -Pattern '^.*[*!?].*$' -NotMatch
+	}
 
-  function Get-SSHConfigFileList ($sshConfigFilePath) {
+	function Get-SSHConfigFileList ($sshConfigFilePath) {
 		$sshConfigDir = Split-Path -Path $sshConfigFilePath -Resolve -Parent
 	
 		$sshConfigFilePaths = @()
@@ -68,8 +68,8 @@ Register-ArgumentCompleter -CommandName ssh,scp,sftp -Native -ScriptBlock {
 		| ForEach-Object { $_ -replace '\$Env:USERPROFILE', $Env:USERPROFILE } `
 		| ForEach-Object { $_ -replace '\$Env:HOMEPATH', $Env:USERPROFILE } `
 		| ForEach-Object { 
-		$sshConfigFilePaths += $(Get-ChildItem -Path $sshConfigDir\$_ -File -ErrorAction SilentlyContinue -Force).FullName `
-		| ForEach-Object { Get-SSHConfigFileList $_ } 
+			$sshConfigFilePaths += $(Get-ChildItem -Path $sshConfigDir\$_ -File -ErrorAction SilentlyContinue -Force).FullName `
+			| ForEach-Object { Get-SSHConfigFileList $_ } 
 		}
 	
 		if (($sshConfigFilePaths.Length -eq 1) -and ($sshConfigFilePaths.item(0) -eq $sshConfigFilePath) ) {

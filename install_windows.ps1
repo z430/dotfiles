@@ -1,23 +1,68 @@
-# terminal setting directory
-terminal_path="$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
+# Attempt to set the execution policy to RemoteSigned for the current user
+# This allows locally created scripts to run, and scripts from the internet to run if they are signed by a trusted publisher
+try {
+    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -ErrorAction Stop
+    Write-Output "Execution policy set to RemoteSigned."
+}
+catch {
+    Write-Output "Could not set execution policy. You might need to run this script as an Administrator or check your system's policies if you're in a restricted environment."
+}
 
-# install c and c++ compiler
-winget install Microsoft.VisualStudio.2022.BuildTools
+# install Chocolatey if not installed
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 
-winget install Microsoft.VisualStudio.2022.Community
+# Ensure Chocolatey is up to date
+choco upgrade chocolatey -y
 
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
-scoop bucket add extras
-scoop install extras/obsidian
-scoop install curl sudo jq neovim gcc
-winget install -e --id Git.Git
+# Install development tools
+choco install mingw -y # C and C++ Compiler (GCC)
+choco install golang -y # Golang
+choco install nodejs -y # NodeJS and npm
+choco install rust -y # Rust
+choco install miniconda3 -y # Miniconda3
 
-Install-Module posh-git -Scope CurrentUser -Force
-scoop install https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/oh-my-posh.json
-Install-Module -Name Terminal-Icons -Repository PSGallery -Force
-Install-Module -Name z -Force
-Install-Module -Name PSReadLine -AllowPrerelease -Scope CurrentUser -Force -SkipPublisherCheck
-scoop install main/fzf
-Install-Module -Name PSFzf -Scope CurrentUSer -Force
-Install-Module -Name PowerColorLS -Repository PSGallery
+# Install terminal tools
+choco install neovim -y # Neovim
+choco install git -y # Git
+choco install fzf -y # Fuzzy Finder
+choco install curl -y # Curl
+choco install sudo -y # Sudo
+choco install jq -y # jq
+choco install oh-my-posh -y # Oh My Posh
+choco install poshgit -y # Posh-Git
+
+Install-Module -Name Terminal-Icons -Repository PSGallery
+Install-Module -Name z
+Install-Module -Name PSReadLine -AllowPrerelease
+Install-Module -Name PowerColorLS
+
+
+# Install productivity tools
+choco install docker-desktop -y # Docker Desktop for Windows
+choco install vscode -y # Visual Studio Code
+choco install wezterm -y # WezTerm
+choco install obsidian -y # Obsidian
+
+# Install utilities
+choco install 7zip -y # 7-Zip
+choco install vlc -y # VLC Media Player
+choco install notepadplusplus -y # Notepad++
+choco install windirstat -y # WinDirStat
+choco install powertoys -y # PowerToys
+
+# copy the configuration files to $HOME/.config
+mkdir -Force $env:USERPROFILE\.config
+Copy-Item powershell\user_profile.ps1 $env:USERPROFILE\.config\user_profile.ps1
+Copy-Item  powershell\powerline.omp.json $env:USERPROFILE\.config\powerline.omp.json
+
+
+# check if $PROFILE exists
+if (!(Test-Path -Path $PROFILE)) {
+    New-Item -ItemType File -Path $PROFILE -Force
+}
+
+# add content to $PROFILE
+Add-Content -Path $PROFILE -Value ". `"$env:USERPROFILE\.config\powershell\user_profile.ps1`""
+
+# copy wezterm configuration
+Copy-Item wezterm\wezterm.lua $env:USERPROFILE\.wezterm.lua

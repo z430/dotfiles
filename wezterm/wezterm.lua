@@ -9,7 +9,8 @@ if wezterm.config_builder then
 	config = wezterm.config_builder()
 end
 
-config.default_domain = "WSL:Ubuntu"
+-- config.default_domain = ""
+config.default_prog = { "pwsh.exe", "-NoLogo" }
 config.color_scheme = "Catppuccin Macchiato"
 config.font = wezterm.font_with_fallback({
 	{ family = "CaskaydiaCove Nerd Font", weight = "Regular" },
@@ -25,15 +26,17 @@ config.window_padding = {
 }
 -- Dim inactive panes
 config.inactive_pane_hsb = {
-	saturation = 0.24,
-	brightness = 0.5,
+	-- saturation = 0.24,
+	brightness = 0.2,
 }
 
+config.audible_bell = "Disabled"
+
 -- Keys
-config.leader = { key = "b", mods = "CTRL", timeout_milliseconds = 1000 }
+config.leader = { key = "w", mods = "CTRL", timeout_milliseconds = 1000 }
 config.keys = {
 	-- Senc C-a when pressing C-a twice
-	{ key = "b", mods = "LEADER", action = act.SendKey({ key = "b", mods = "CTRL" }) },
+	{ key = "w", mods = "LEADER", action = act.SendKey({ key = "w", mods = "CTRL" }) },
 	{ key = "c", mods = "LEADER", action = act.ActivateCopyMode },
 	{ key = "phys:Space", mods = "LEADER", action = act.ActivateCommandPalette },
 
@@ -172,7 +175,6 @@ end)
 wezterm.on("gui-startup", function()
 	local tab, pane, window = mux.spawn_window({})
 	window:gui_window():maximize()
-	pane:split({ size = 0.5 })
 end)
 
 return config

@@ -59,6 +59,17 @@
       "alignment": "right",
       "segments": [
         {
+          "foreground": "#FFFF00",
+          "style": "diamond",
+          "type": "python",
+          "template": " \ue235 {{ if .Error }}{{ .Error }}{{ else }}{{ if .Venv }}{{ .Venv }} {{ end }}{{ .Full }}{{ end }} ",
+          "properties": {
+            "fetch_virtual_env": true,
+            "display_mode": "environment",
+            "home_enabled": true
+          }
+        },
+        {
           "background": "#303030",
           "foreground": "#3C873A",
           "leading_diamond": " \ue0b6",
@@ -71,16 +82,6 @@
           "template": "\ue718 {{ if .PackageManagerIcon }}{{ .PackageManagerIcon }} {{ end }}{{ .Full }}",
           "trailing_diamond": "\ue0b4",
           "type": "node"
-        },
-        {
-          "background": "#40c4ff",
-          "foreground": "#ffffff",
-          "invert_powerline": true,
-          "leading_diamond": " \ue0b6",
-          "style": "diamond",
-          "template": " \ue641 {{ .CurrentDate | date .Format }} ",
-          "trailing_diamond": "\ue0b4",
-          "type": "time"
         }
       ],
       "type": "prompt"
