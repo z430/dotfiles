@@ -66,3 +66,13 @@ Add-Content -Path $PROFILE -Value ". `"$env:USERPROFILE\.config\powershell\user_
 
 # copy wezterm configuration
 Copy-Item wezterm\wezterm.lua $env:USERPROFILE\.wezterm.lua
+
+# install scoop
+Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+
+# install nerd fonts
+scoop bucket add nerd-fonts
+scoop install FiraCode-NF-Mono
+scoop install Hack-NF
+scoop install JetBrainsMono-NF
